@@ -1,0 +1,31 @@
+import matplotlib.pyplot as plt
+
+digit_probabilities = {
+    1: 0.2568,
+    2: 0.2207,
+    3: 0.1094,
+    4: 0.0950,
+    5: 0.0679,
+    6: 0.0961,
+    7: 0.0681,
+    8: 0.0509,
+    9: 0.0352,
+}
+
+digits = list(digit_probabilities.keys())
+probs = list(digit_probabilities.values())
+
+plt.figure(figsize=(10, 6))
+plt.bar(digits, probs, color='skyblue', edgecolor='black')
+plt.title("First Number P(x) - in 2025.5.Employment Trends", fontsize=14)
+plt.xlabel("First Number", fontsize=12)
+plt.ylabel("P(x)", fontsize=12)
+plt.xticks(digits)
+plt.ylim(0, max(probs) * 1.2)
+
+for i, prob in enumerate(probs):
+    plt.text(digits[i], prob + 0.005, f"{prob:.2%}", ha='center', fontsize=10)
+
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
