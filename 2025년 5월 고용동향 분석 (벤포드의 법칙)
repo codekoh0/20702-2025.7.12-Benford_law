@@ -1,0 +1,40 @@
+import pandas as pd
+import re
+from collections import Counter
+
+file_path = "ssec2505(통계표).xlsx"
+excel_data = pd.ExcelFile(file_path)
+sheet_names = excel_data.sheet_names
+all_sheets_data = {sheet_name: excel_data.parse(sheet_name) for sheet_name in sheet_names}
+
+def extract_leading_digits(df):
+    digits = []
+    for col in df.columns:
+        for val in df[col]:
+            if isinstance(val, (int, float)):
+                str_val = str(abs(val))
+            elif isinstance(val, str):
+                str_val = re.sub(r"[^\d.]", "", val)
+            else:
+                continue
+
+            if str_val and re.match(r"\d", str_val):
+                first_digit = str_val.lstrip("0.")[:1]
+                if first_digit.isdigit() and first_digit != '0':
+                    digits.append(int(first_digit))
+    return digits
+
+all_digits = []
+for sheet_df in all_sheets_data.values():
+    all_digits.extend(extract_leading_digits(sheet_df))
+
+digit_counts = Counter(all_digits)
+total_digits = sum(digit_counts.values())
+
+digit_probabilities = {
+    digit: digit_counts.get(digit, 0) / total_digits for digit in range(1, 10)
+}
+
+print("첫 자릿수 확률 분포:")
+for digit in range(1, 10):
+    print(f"{digit}: {digit_probabilities[digit]:.4f}")
